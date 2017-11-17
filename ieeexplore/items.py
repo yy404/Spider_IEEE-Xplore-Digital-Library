@@ -8,7 +8,6 @@
 import scrapy
 
 
-class IeeexploreItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+class Paper(scrapy.Item):
+    title = scrapy.Field()
     pass

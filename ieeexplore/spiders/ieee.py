@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import pandas as pd
 from bs4 import BeautifulSoup
+from ..items import Paper
 
 
 # scrapy crawl ieee -a term=5G
@@ -49,11 +50,10 @@ class IeeeSpider(scrapy.Spider):
         for title_element in titles:
             bs_obj = BeautifulSoup(title_element, 'lxml')
             title_tags = bs_obj.find_all(text=True)
-            title_string = str()
             for title in title_tags:
-                title_string += title
-
-            self.output.append(title_string)
+                paper = Paper()
+                paper['title'] = str(title)
+                yield paper
 
         # 下一页走起
         driver.find_element_by_xpath \
@@ -74,11 +74,10 @@ class IeeeSpider(scrapy.Spider):
                 for title_element in titles:
                     bs_obj = BeautifulSoup(title_element, 'lxml')
                     title_tags = bs_obj.find_all(text=True)
-                    title_string = str()
                     for title in title_tags:
-                        title_string += title
-
-                    self.output.append(title_string)
+                        paper = Paper()
+                        paper['title'] = str(title)
+                        yield paper
 
                 # 下一页走起
                 driver.find_element_by_xpath \
@@ -86,9 +85,7 @@ class IeeeSpider(scrapy.Spider):
                 time.sleep(4)
 
         except:
-            # 把搜索下来的数据存起来
-            df = pd.DataFrame({'title': self.output})
-            df.to_csv("paper_titles.csv")
+            print("Successfully Scrapped")
 
 
 
