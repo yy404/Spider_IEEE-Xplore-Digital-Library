@@ -9,7 +9,6 @@ from scrapy import signals
 from scrapy.http import HtmlResponse
 from selenium import webdriver
 
-
 class IeeexploreSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -60,8 +59,9 @@ class IeeexploreSpiderMiddleware(object):
 
 class JSMiddleware(object):
     def process_request(self, request, spider):
-        driver = webdriver.Chrome()
-        driver.get(request.url)
+        spider.driver = webdriver.Chrome()
 
-        body = driver.page_source
-        return HtmlResponse(driver.current_url, body=body, encoding='utf-8', request=request)
+        spider.driver.get(request.url)
+
+        body = spider.driver.page_source
+        return HtmlResponse(spider.driver.current_url, body=body, encoding='utf-8', request=request)
