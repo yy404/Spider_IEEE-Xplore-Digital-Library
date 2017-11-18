@@ -22,6 +22,7 @@ class IeeeSpider(scrapy.Spider):
         self.term = term
 
         self.output = []
+        self.files_num = 1
 
     def __del__(self):
         self.driver.close()
@@ -83,12 +84,20 @@ class IeeeSpider(scrapy.Spider):
                 # 下一页走起
                 driver.find_element_by_xpath \
                         ("""//*[contains(concat( " ", @class, " " ), concat( " ", "next", " " ))][not(contains(@class, "disabled"))]//*[contains(concat( " ", @class, " " ), concat( " ", "ng-binding", " " ))]""").click()
-                time.sleep(4)
+                time.sleep(2)
+
+                if len(self.output) > 2000:
+                    df = pd.DataFrame({'title': self.output})
+                    df.to_csv("paper_title_%s.csv" % str(self.files_num))
+
+                    self.files_num += 1
+                    self.output = []
+
 
         except:
             # 把搜索下来的数据存起来
             df = pd.DataFrame({'title': self.output})
-            df.to_csv("paper_titles.csv")
+            df.to_csv("paper_titles_last.csv")
 
 
 
